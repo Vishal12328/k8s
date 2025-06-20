@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpledepl
+  namespace: vishal-namespace
+spec:
+  selector:
+    matchLabels:
+      app: simpledepl
+  template:
+    metadata:
+      labels:
+        app: simpledepl
+    spec:
+      containers:
+      - name: simpledepl
+        image: busybox
+        env:
+        - name: GREETING
+          valueFrom:
+            configMapKeyRef:
+              name: simpleconfig
+              key: Name
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: simplesec
+              key: Password
+        command: ["sh", "-c", "echo $GREETING && echo $PASSWORD && sleep 3600"]
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
